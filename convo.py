@@ -130,61 +130,56 @@ color: #FFFFFF;
 
 
 }}
+            
+.stButton > button:hover {{
+          color: #FFFFFF;  
+          background: #17ca88;
+          border: #FFFFFF;
+}}
 /* Base styles for the score boxes */
-.score-box {{
-    background-color: #F9F9F9; /* Light background color */
-    border-radius: 15px;
-    padding: 20px 20px;
-    margin: 10px;
-    color: #333; /* Dark text for contrast */
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    height: 150px !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+.convo-score-container {{
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px; /* Adjust as necessary */
 }}
 
-.score-box:hover {{
-    transform: translateY(-5px); /* Slight lift effect on hover */
+.convo-score-meter {{
+    position: relative;
+    display: inline-block;
+    width: 170px; /* Adjust as necessary */
+    height: 170px; /* Adjust as necessary */
+    border: 13px solid #D9D9D9;
+    border-radius: 50%; /* Makes it circular */
+    text-align: center;
+    line-height: 150px; /* Adjust as necessary */
 }}
 
-.score-icon {{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px; /* Width of the icon */
-    height: 60px; /* Height of the icon */
-    margin-right: 20px;
-    border: 3px solid #AAAAAA; /* Grey border */
-    border-radius: 50%; /* Circular border */
-    font-size: 2em;
-    color: #AAAAAA; /* Grey color */
+.convo-score-value {{
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    font-size: 48px; /* Adjust as necessary */
+    color: #A7A7A7;
+    vertical-align: middle;
 }}
 
-.score-title {{
-    margin: 0;
-    font-weight: 600; /* Slightly bolder font for the title */
-    font-size: 1.2em; /* Larger font size for the title */
+.convo-score-label {{
+    font-family: 'BR Candor', sans-serif;
+    font-weight: 700;
+    font-size: 2.5em;/* Adjust as necessary */
+    color: #022D60;
+    margin-top: 20px; /* Adjust as necessary */
 }}
 
-.score-description {{
-    margin: 5px 0 0;
-    font-size: 0.9em; /* Standard font size for the description */
+.convo-score-description {{
+    font-size: 1.4em; /* Adjust as necessary */
+    color: #333;
+    margin-top: 20px; /* Adjust as necessary */
+    width: 80%; /* Adjust as necessary */
+    margin-left: auto;
+    margin-right: auto;
 }}
-
-/* Extra adjustments for alignment */
-.row {{
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-}}
-
-/* Ensure the content in the columns is centered */
-.stColumn {{
-    display: flex;
-    justify-content: center;
-}}    
-
+            
 .Discourse{{
 position: relative;
 width: 100%;
@@ -195,20 +190,23 @@ text-align: center;
 /* Media query for mobile devices to adjust the header, search bar, and button */
 @media (max-width: 768px) {{
     .header {{
-        padding: 1rem 0.5rem; /* Smaller padding on mobile */
+        padding: 0.5rem 0.5rem; /* Smaller padding on mobile */
+        width: 100%;
+        height: 500px;
     }}
 
     .img-fluid {{
-        max-width: 80px; /* Smaller logo on mobile */
+        max-width: 150px; /* Smaller logo on mobile */
+       
     }}
 
     /* Adjust the search bar position, width, and other properties for mobile */
     .stTextArea {{
-        margin-top: -22%; /* Adjust this value to move the search bar up into the header */
-        width: 80%; /* Adjust width as necessary */
+        margin-top: -62% !important; /* Adjust this value to move the search bar up into the header */
+        width: 85% !important; /* Adjust width as necessary */
         margin-left: auto;
         margin-right: auto;
-        z-index: 3;
+        z-index: 3!important;
     }}
 
     .stTextArea>div>div>textarea {{
@@ -226,13 +224,13 @@ text-align: center;
     /* Adjust the button position and size for mobile */
     .stButton > button {{
         font-size: 14px; /* Smaller font size on mobile */
-        margin-top: -50px; /* Adjust this value to move the button up into the header */
+        margin-top: -25% !important; /* Adjust this value to move the button up into the header */
         position: absolute;
         top: 55%; /* Adjust top position for mobile */
         left: 50%; /* Center the button horizontally */
         transform: translateX(-50%);
-        width: 80%; /* Adjust button width as necessary */
-        padding: 8px 16px; /* Adjust padding for mobile */
+        width: 85%; /* Adjust button width as necessary */
+        padding: 20px 20px !important; /* Adjust padding for mobile */
         font-family: 'Arvo';
         font-weight: 700;
         line-height: 15px;
@@ -242,6 +240,12 @@ text-align: center;
         border-radius: 4px;
         z-index: 3;
     }}
+            
+.stButton > button:hover {{
+          color: #FFFFFF;  
+          background: #17ca88;
+          border: #FFFFFF;
+}}
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -263,40 +267,15 @@ user_input = st.text_area("Post Input", placeholder="Paste your post here, and w
 if st.button('Analyze Post'):
     st.success("The analysis of the post will be displayed here.")
 
-# Column layout for score boxes (placeholders for now)
-col1, col2, col3 = st.columns([1, 1, 1], gap="small")
-
-with col1:
-    st.markdown("""
-    <div class="score-box">
-        <div class="score-icon">0</div>
-        <div>
-            <div class="score-title">Discussability</div>
-            <div class="score-description">How similar your post is to posts that have generated a lot of fruitful discussion</div>
-        </div>
+st.markdown("""
+<div class="convo-score-container">
+    <div class="convo-score-meter">
+        <span class="convo-score-value">0</span>
     </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="score-box">
-        <div
-class="score-icon">0</div>
-<div>
-<div class="score-title">Sentiment</div>
-<div class="score-description">The positivity or negativity rating of your post</div>
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-<div class="score-box">
-<div class="score-icon">0</div>
-<div>
-<div class="score-title">Comparison</div>
-<div class="score-description">The number of percentage points above or below <br> the average post studied your post is in both <br>discussability and sentiment</div>
-</div>
+    <div class="convo-score-label">convo score</div>
+    <h5 class="convo-score-description">
+        We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
+    </h5>
 </div>
 """, unsafe_allow_html=True)
     

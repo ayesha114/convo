@@ -116,19 +116,13 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
     position: absolute;
     left: 29.5%;
     right: 30.5%;
-
-
-font-family: 'Arvo';
-font-style: normal;
-font-weight: 700;
-font-size: 12px;
-line-height: 15px;
-
-text-align: center;
-
-color: #FFFFFF;
-
-
+    font-family: 'Arvo';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #FFFFFF;
 }}
             
 .stButton > button:hover {{
@@ -181,10 +175,10 @@ color: #FFFFFF;
 }}
             
 .Discourse{{
-position: relative;
-width: 100%;
-padding: 20px 20px;
-text-align: center;
+    position: relative;
+    width: 100%;
+    padding: 20px 20px;
+    text-align: center;
 }}
 
 /* Media query for mobile devices to adjust the header, search bar, and button */

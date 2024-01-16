@@ -7,7 +7,7 @@ def load_logo(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 # Paths to your images - replace these with the actual file paths on your system
-logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
+logo_path = r"images\img.png"  # Replace with the path to your logo image
 
 # Load and encode the logo
 logo_encoded = load_logo(logo_path)

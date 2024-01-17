@@ -18,6 +18,23 @@ def calculate_convo_score(post):
     score = min(score, 10)  # Cap the score at 10
     return score
 
+
+def get_score_style(score):
+    if score == 10:
+        color = "#0FEF34"  # Green
+        message = "Great post!"
+    elif score >= 7:
+        color = "#FFEB3B"  # Yellow
+        message = "Pretty good post"
+    elif score >= 5:
+        color = "#FF9800"  # Orange
+        message = "Could be better"
+    else:
+        color = "#f44336"  # Red
+        message = "Needs work"
+    return color, message
+
+
 # Paths to your images - replace these with the actual file paths on your system
 logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
 
@@ -333,7 +350,6 @@ score_container.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Description text below the score circle
 st.markdown("""
 <h5 class="convo-score-description">
     We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
@@ -345,12 +361,16 @@ if analyze_button:
     if user_input:
         # Calculate the score
         score = calculate_convo_score(user_input)
-        # Display the success message
-        success_message_container.success(f"The analysis of the post will be displayed here. Your convo score is: {score}")
-        # Update the score in the existing score circle
+        
+        # Get the color and message based on the score
+        color, message = get_score_style(score)
+        
+        
+        # Update the score circle with dynamic border color and update the score value inside the circle
         score_container.markdown(f"""
         <div class="convo-score-container">
-            <div class="convo-score-meter">
+            <div style="color: {color}; font-size: 2em; font-weight: bold; margin-bottom: 10px;">{message}</div>
+            <div class="convo-score-meter" style="border: 13px solid {color};">
                 <span class="convo-score-value">{score}/10</span>
             </div>
             <div class="convo-score-label">convo score</div>

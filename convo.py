@@ -1,12 +1,15 @@
 import streamlit as st
 import base64
 
+
+# Begin Streamlit app
+st.set_page_config(page_title="Convo", layout="wide")
+
 # Function to load and encode the logo image
 def load_logo(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
-
-# Scoring function based on simple heuristics
+    
 def calculate_convo_score(post):
     score = 0
     score += min(len(post) / 100, 0)  # Up to 3 points for length
@@ -15,12 +18,11 @@ def calculate_convo_score(post):
     score = min(score, 10)  # Cap the score at 10
     return score
 
-# Load and encode the logo
+# Paths to your images - replace these with the actual file paths on your system
 logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
-logo_encoded = load_logo(logo_path)
 
-# Begin Streamlit app
-st.set_page_config(page_title="Convo", layout="wide")
+# Load and encode the logo
+logo_encoded = load_logo(logo_path)
 
 # Custom CSS for styling
 st.markdown(f"""
@@ -126,19 +128,13 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
     position: absolute;
     left: 29.5%;
     right: 30.5%;
-
-
-font-family: 'Arvo';
-font-style: normal;
-font-weight: 700;
-font-size: 12px;
-line-height: 15px;
-
-text-align: center;
-
-color: #FFFFFF;
-
-
+    font-family: 'Arvo';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #FFFFFF;
 }}
             
 .stButton > button:hover {{
@@ -192,36 +188,36 @@ color: #FFFFFF;
 }}
             
 .Discourse{{
-position: relative;
-width: 100%;
-padding: 20px 20px;
-text-align: center;
+    position: relative;
+    width: 100%;
+    padding: 20px 20px;
+    text-align: center;
 }}
 
 /* Style for custom file uploader button */
             
-.upload-btn-wrapper {{
-  margin-top: -14.3%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 15%;
-}}
-
-.btn {{
-  border: 2px solid #0068c9;
-  color: white;
-  background-color: #0068c9;
-  padding: 8px 0px;
-  width: 82%;
-  border-radius: 3px;
-  font-size: 15px;
-  font-weight: bold;
-}}
-
-.upload-btn-wrapper input[type=file] {{
-  top: 0;
-  opacity: 0;
-}}
+[data-testid='stFileUploader'] {{
+          margin-top: -16.21%;
+          margin-left: auto;
+          margin-right: auto;
+          width: max-content;
+         
+    }}
+    [data-testid='stFileUploader'] section {{
+        border: 2px solid #0068c9;
+        padding: 8px 500px;
+        background-color: #1da6db;
+       
+    }}
+    [data-testid='stFileUploader'] section > input + div {{
+        display: none;
+        
+    }}
+    [data-testid='stFileUploader'] section + div {{
+        float: right;
+        padding-top: 0;
+        
+    }}
 
 /* Style adjustments for upload button to align with the text area */
 
@@ -315,12 +311,7 @@ st.markdown(f"""
 user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation")
 
 # Custom file uploader button
-st.markdown("""
-<div class="upload-btn-wrapper">
-  <button class="btn">Upload an Image</button>
-  <input type="file" name="myfile" />
-</div>
-""", unsafe_allow_html=True)
+# st.file_uploader(f"", type=['png', 'jpg', 'jpeg'])
 
 
 # Button for analyzing post

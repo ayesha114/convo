@@ -260,7 +260,7 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 
     /* Adjust the search bar position, width, and other properties for mobile */
     .stTextArea {{
-        margin-top: -85% !important; /* Adjust this value to move the search bar up into the header */
+        margin-top: -75% !important; /* Adjust this value to move the search bar up into the header */
         width: 85% !important; /* Adjust width as necessary */
         margin-left: auto;
         margin-right: auto;

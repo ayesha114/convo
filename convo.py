@@ -1,5 +1,10 @@
+import sentiment
+
 import streamlit as st
 import base64
+from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
+from clarifai_grpc.grpc.api.status import status_code_pb2
 
 
 # Begin Streamlit app
@@ -11,11 +16,13 @@ def load_logo(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
     
 def calculate_convo_score(post):
-    score = 0
-    score += min(len(post) / 100, 0)  # Up to 3 points for length
-    score += post.count('?') * 2  # 2 points for each question
-    score += post.count('!')  # 1 point for each exclamation mark
-    score = min(score, 10)  # Cap the score at 10
+
+    a,b = sentiment.sentimentAnalyser(post) # type, score
+    score = b
+    # score += min(len(post) / 100, 0)  # Up to 3 points for length
+    # score += post.count('?') * 2  # 2 points for each question
+    # score += post.count('!')  # 1 point for each exclamation mark
+    # score = min(score, 10)  # Cap the score at 10
     return score
 
 
@@ -325,7 +332,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Container for the input field and custom upload button
-user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation")
+user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation").strip()
 
 # Custom file uploader button
 # st.file_uploader(f"", type=['png', 'jpg', 'jpeg'])

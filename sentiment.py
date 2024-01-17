@@ -80,7 +80,7 @@ def sentimentAnalyser(RAW_TEXT):
         return 'Positive', score
 
     elif z['negative'] > z['positive'] and z['negative'] > z['neutral']:
-        score =  round(z['negative']*10)
+        score =  round(1 - z['negative']*10)
         print('Negative', score)
         return 'Negative', score
 

@@ -6,24 +6,35 @@ def load_logo(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
-# Paths to your images - replace these with the actual file paths on your system
-logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
+# Scoring function based on simple heuristics
+def calculate_convo_score(post):
+    score = 0
+    score += min(len(post) / 100, 0)  # Up to 3 points for length
+    score += post.count('?') * 2  # 2 points for each question
+    score += post.count('!')  # 1 point for each exclamation mark
+    score = min(score, 10)  # Cap the score at 10
+    return score
 
 # Load and encode the logo
+logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
 logo_encoded = load_logo(logo_path)
 
 # Begin Streamlit app
 st.set_page_config(page_title="Convo", layout="wide")
 
-
-style = """
-    display: flex;
-    justify-content: center;
-"""
 # Custom CSS for styling
 st.markdown(f"""
 <style>
-            
+
+* {{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}}
+div.block-container {{
+    max-width: calc(100% - 2rem);
+}}
+
 .header, .header h1, .header h2, .header .stTextArea, .header .stButton > button {{
     color: #FFFFFF;
 }}
@@ -86,15 +97,15 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
             
 .stTextArea {{
     margin-top: -23%; /* Pull the text area up into the header */
-     width: 70% !important;
+    width: 70% !important;
     margin-left: auto;
     margin-right: auto;
+     border-radius: 0px;
     z-index: 3; /* Corrected property name for stacking order */
 }}
 
 .stTextArea>div>div>textarea {{
     background-color: #eff3f6;
-    border-radius: 20px;
     border: 1px solid #ced4da;
     height: 100px; /* Adjust height as necessary */
 }}
@@ -109,7 +120,6 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 .stButton > button {{
     font-size: 18px;  
     margin-top: -11%;/* Adjust this value to move the button up into the header */
-    left: 70%; /* Center the button horizontally */
     z-index: 5; /* Ensure the button is above other elements */
     background: #A8C4BA;
     border-radius: 4px;
@@ -178,6 +188,7 @@ color: #FFFFFF;
     width: 80%; /* Adjust as necessary */
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }}
             
 .Discourse{{
@@ -187,12 +198,39 @@ padding: 20px 20px;
 text-align: center;
 }}
 
+/* Style for custom file uploader button */
+            
+.upload-btn-wrapper {{
+  margin-top: -14.3%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15%;
+}}
+
+.btn {{
+  border: 2px solid #0068c9;
+  color: white;
+  background-color: #0068c9;
+  padding: 8px 0px;
+  width: 82%;
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: bold;
+}}
+
+.upload-btn-wrapper input[type=file] {{
+  top: 0;
+  opacity: 0;
+}}
+
+/* Style adjustments for upload button to align with the text area */
+
 /* Media query for mobile devices to adjust the header, search bar, and button */
 @media (max-width: 768px) {{
     .header {{
         padding: 0.5rem 0.5rem; /* Smaller padding on mobile */
         width: 100%;
-        height: 500px;
+        height: 600px;
     }}
 
     .img-fluid {{
@@ -202,7 +240,7 @@ text-align: center;
 
     /* Adjust the search bar position, width, and other properties for mobile */
     .stTextArea {{
-        margin-top: -62% !important; /* Adjust this value to move the search bar up into the header */
+        margin-top: -85% !important; /* Adjust this value to move the search bar up into the header */
         width: 85% !important; /* Adjust width as necessary */
         margin-left: auto;
         margin-right: auto;
@@ -224,7 +262,7 @@ text-align: center;
     /* Adjust the button position and size for mobile */
     .stButton > button {{
         font-size: 14px; /* Smaller font size on mobile */
-        margin-top: -25% !important; /* Adjust this value to move the button up into the header */
+        margin-top: -35% !important; /* Adjust this value to move the button up into the header */
         position: absolute;
         top: 55%; /* Adjust top position for mobile */
         left: 50%; /* Center the button horizontally */
@@ -246,6 +284,20 @@ text-align: center;
           background: #17ca88;
           border: #FFFFFF;
 }}
+
+.upload-btn-wrapper {{
+  margin-top: -52%;
+  z-index: 4;
+}}
+            
+.btn{{
+    padding: 8px 0px;
+    width: 100%;
+    margin-left: -9%;
+}}
+
+
+            
 }}
 </style>
 """, unsafe_allow_html=True)
@@ -259,26 +311,62 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Text area for post input
-user_input = st.text_area("Post Input", placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation", height=150, )
+# Container for the input field and custom upload button
+user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation")
 
-
-
-if st.button('Analyze Post'):
-    st.success("The analysis of the post will be displayed here.")
-
+# Custom file uploader button
 st.markdown("""
-<div class="convo-score-container">
-    <div class="convo-score-meter">
-        <span class="convo-score-value">0</span>
-    </div>
-    <div class="convo-score-label">convo score</div>
-    <h5 class="convo-score-description">
-        We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
-    </h5>
+<div class="upload-btn-wrapper">
+  <button class="btn">Upload an Image</button>
+  <input type="file" name="myfile" />
 </div>
 """, unsafe_allow_html=True)
-    
+
+
+# Button for analyzing post
+analyze_button = st.button('Analyze Post')
+
+# Container to hold the success message, placed above the score circle
+success_message_container = st.empty()
+
+# Container to hold the score circle
+score_container = st.empty()
+
+# Show initial score circle with score 0
+score_container.markdown(f"""
+<div class="convo-score-container">
+    <div class="convo-score-meter">
+        <span class="convo-score-value">0/10</span>
+    </div>
+    <div class="convo-score-label">convo score</div>
+</div>
+""", unsafe_allow_html=True)
+
+# Description text below the score circle
+st.markdown("""
+<h5 class="convo-score-description">
+    We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
+</h5>
+""", unsafe_allow_html=True)
+
+# Button action
+if analyze_button:
+    if user_input:
+        # Calculate the score
+        score = calculate_convo_score(user_input)
+        # Display the success message
+        success_message_container.success(f"The analysis of the post will be displayed here. Your convo score is: {score}")
+        # Update the score in the existing score circle
+        score_container.markdown(f"""
+        <div class="convo-score-container">
+            <div class="convo-score-meter">
+                <span class="convo-score-value">{score}/10</span>
+            </div>
+            <div class="convo-score-label">convo score</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        success_message_container.error("Please enter a post to analyze.")
 
 st.markdown(f"""
     <div class="Discourse" style="text-align: center; "> 

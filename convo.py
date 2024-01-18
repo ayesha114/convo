@@ -319,7 +319,7 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 st.markdown(f"""
     <div class="header" style="text-align: center; color: #FFFFFF;">
         <img src="data:image/png;base64,{logo_encoded}" class="img-fluid" alt="Convo logo">
-        <h1>Let's get talking</h1>
+        <h1>Get people talking</h1>
         <h2>Power up your posts to foster meaningful conversation</h2>
     </div>
 """, unsafe_allow_html=True)

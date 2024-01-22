@@ -1,8 +1,9 @@
 import streamlit as st
 import base64
 from random import choice
+import models
 
-
+suggested_posts = ["hello world"]
 # Begin Streamlit app
 st.set_page_config(page_title="Convo", layout="wide")
 
@@ -10,13 +11,38 @@ st.set_page_config(page_title="Convo", layout="wide")
 def load_logo(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
+def calculate_convo_score(post):
 
-suggested_posts = [
-    "Based on what I've seen in my travels, it seems that the communities with the fewest financial resources have the most collaborative cultures. Have you seen the same thing?",
-     "This suggested post frames the content in a more conversational manner, and includes a question."
-     "Part of the reason some cultures rely more on family relationships is due to lack of resources. This is what I keep seeing."
-    # ... add more suggested posts as needed
-]
+    a,b = models.sentimentAnalyser(post) # type, score
+    global suggested_posts
+    suggested_posts.append(models.convertor(post))
+    # st.session_state["current_post"] = models.convertor(post)
+    models.convertor(post)
+    score = b
+    # score += min(len(post) / 100, 0)  # Up to 3 points for length
+    # score += post.count('?') * 2  # 2 points for each question
+    # score += post.count('!')  # 1 point for each exclamation mark
+    # score = min(score, 10)  # Cap the score at 10
+    return score
+
+
+def get_score_style(score):
+    if score == 10:
+        color = "#0FEF34"  # Green
+        message = "Great post!"
+    elif score >= 7:
+        color = "#FFEB3B"  # Yellow
+        message = "Pretty good post"
+    elif score >= 5:
+        color = "#FF9800"  # Orange
+        message = "Could be better"
+    else:
+        color = "#f44336"  # Red
+        message = "Needs work"
+    return color, message
+
+
+
 
 # Function to get a random post from the list of suggested posts
 def get_random_post():
@@ -24,7 +50,7 @@ def get_random_post():
 
 # Initialize the current post in session state if not already done
 if 'current_post' not in st.session_state:
-    st.session_state['current_post'] = "Part of the reason some cultures rely more on family relationships is due to lack of resources. This is what I keep seeing."
+    st.session_state['current_post'] = models.convertor("Hello world")
 
 # Paths to your images - replace these with the actual file paths on your system
 logo_path = "images/img.jpg"  # Replace with the path to your logo image
@@ -45,7 +71,7 @@ div.block-container {{
     max-width: calc(100% - 2rem);
 }}
 
-.header, .header h1, .header h2, .header .stTextArea, .header .stButton > button {{
+.header, .header h1, .header h2 {{
     color: #FFFFFF;
 }}
             
@@ -191,7 +217,7 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 .convo-score-description {{
     font-size: 1.4em; /* Adjust as necessary */
     color: #333;
-    margin-top: 20px; /* Adjust as necessary */
+    margin-top: 2% !important; /* Adjust as necessary */
     width: 80%; /* Adjust as necessary */
     margin-left: auto;
     margin-right: auto;
@@ -488,6 +514,30 @@ score_container.markdown(f"""
     <div class="convo-score-label">convo score</div>
 </div>
 """, unsafe_allow_html=True)
+# Button action
+if analyze_button:
+    if user_input:
+        # Calculate the score
+        global x 
+        x = user_input
+        score = calculate_convo_score(user_input)
+        
+        # Get the color and message based on the score
+        color, message = get_score_style(score)
+        
+        
+        # Update the score circle with dynamic border color and update the score value inside the circle
+        score_container.markdown(f"""
+        <div class="convo-score-container">
+            <div style="color: {color}; font-size: 2em; font-weight: bold; margin-bottom: 10px;">{message}</div>
+            <div class="convo-score-meter" style="border: 13px solid {color};">
+                <span class="convo-score-value">{score}/10</span>
+            </div>
+            <div class="convo-score-label">convo score</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        success_message_container.error("Please enter a post to analyze.")
 
 st.markdown("""
 <h5 class="convo-score-description">
@@ -508,29 +558,39 @@ st.markdown("""
 st.markdown("""
   <div class="Suggested"> Suggested Post</div>
 """, unsafe_allow_html=True)
+suggested_post_area = st.empty()
+suggested_post_area.text_area("Suggested Post",height=150, help="This is your suggested post. Feel free to edit!")
+txt = models.convertor(user_input)
 
+if user_input:
+    txt = models.convertor(user_input)
+    # logtxtbox.text_area("Logging: ",txt, height = 500)
 # Suggested Post section with buttons
-suggested_post_area = st.text_area("Suggested Post", st.session_state["current_post"], height=150, key="post_area", help="This is your suggested post. Feel free to edit!")
+    suggested_post_area.empty()
+    suggested_post_area.text_area("Suggested Post", txt ,height=150, key="post_area", help="This is your suggested post. Feel free to edit!")
 
-# Placing the buttons in the same row
-col1, col2 = st.columns([1, 1], gap="small")
-with col1:
-    # Custom 'Copy' button
-    copy_button = st.markdown(f"""
-    <button class="copy-button" onclick="navigator.clipboard.writeText(`{st.session_state['current_post']}`)">Copy</button>
-    """, unsafe_allow_html=True)
 
-with col2:
-    # Custom 'Reroll' button
-    reroll_button = st.markdown("""
-    <button class="reroll-button" onclick="window.location.reload()">Reroll</button>
-    """, unsafe_allow_html=True)
+reroll_button = st.button("Reroll")
 
-st.markdown("""
-<h5 class="convo-score-description">
-    We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
-</h5>
-""", unsafe_allow_html=True)
+if reroll_button:
+    pass
+# # Placing the buttons in the same row
+# col1, col2 = st.columns([1, 1], gap="small")
+# reroll_button = st.button("Reroll")
+# with col1:
+#     # Custom 'Copy' button
+#     reroll_button.markdown(f"""
+#     <button class="copy-button" onclick="navigator.clipboard.writeText(`{st.session_state['current_post']}`)">Copy</button>
+#     """, unsafe_allow_html=True)
+
+# with col2:
+#     # Custom 'Reroll' button
+#     reroll_button = st.markdown("""
+#     <button class="reroll-button" onclick="models.convertor()">Reroll</button>
+#     """, unsafe_allow_html=True)
+# # if reroll_button:
+# #     print("reroll pressed")
+
 
 st.markdown(f"""
     <div class="Discourse" style="text-align: center; "> 

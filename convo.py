@@ -1,3 +1,5 @@
+import models
+
 import streamlit as st
 import base64
 
@@ -11,11 +13,14 @@ def load_logo(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
     
 def calculate_convo_score(post):
-    score = 0
-    score += min(len(post) / 100, 0)  # Up to 3 points for length
-    score += post.count('?') * 2  # 2 points for each question
-    score += post.count('!')  # 1 point for each exclamation mark
-    score = min(score, 10)  # Cap the score at 10
+
+    a,b = models.sentimentAnalyser(post) # type, score
+    models.convertor(post)
+    score = b
+    # score += min(len(post) / 100, 0)  # Up to 3 points for length
+    # score += post.count('?') * 2  # 2 points for each question
+    # score += post.count('!')  # 1 point for each exclamation mark
+    # score = min(score, 10)  # Cap the score at 10
     return score
 
 
@@ -36,7 +41,7 @@ def get_score_style(score):
 
 
 # Paths to your images - replace these with the actual file paths on your system
-logo_path = r"C:\Users\LENOVO T480\Desktop\Convo\images\img.png"  # Replace with the path to your logo image
+logo_path = "images/img.png"  # Replace with the path to your logo image
 
 # Load and encode the logo
 logo_encoded = load_logo(logo_path)
@@ -253,7 +258,7 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 
     /* Adjust the search bar position, width, and other properties for mobile */
     .stTextArea {{
-        margin-top: -85% !important; /* Adjust this value to move the search bar up into the header */
+        margin-top: -65% !important; /* Adjust this value to move the search bar up into the header */
         width: 85% !important; /* Adjust width as necessary */
         margin-left: auto;
         margin-right: auto;
@@ -383,7 +388,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Container for the input field and custom upload button
-user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation")
+user_input = st.text_area("Post Input", height=150, placeholder="Paste your post here, and we’ll tell you how likely it is to foster productive conversation").strip()
 
 # Custom file uploader button
 # st.file_uploader(f"", type=['png', 'jpg', 'jpeg'])

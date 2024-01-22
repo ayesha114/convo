@@ -75,18 +75,18 @@ def sentimentAnalyser(RAW_TEXT):
 
     if z['positive'] > z['negative'] and z['positive'] > z['neutral']:
         score = round(z['positive']*10)
-        print(f"Positive,  Score = {score}")
+        # print(f"Positive,  Score = {score}")
             
         return 'Positive', score
 
     elif z['negative'] > z['positive'] and z['negative'] > z['neutral']:
         score =  round((1 - z['negative'])*10)
-        print('Negative', score)
+        # print('Negative', score)
         return 'Negative', score
 
     elif z['neutral'] > z['positive'] and z['neutral'] > z['negative']:
         score =  round((1 - z['negative'])*10)
-        print('Neutral', score)
+        # print('Neutral', score)
         return 'Neutral', score
 
     # Uncomment this line to print the full Response JSON
@@ -161,5 +161,6 @@ def convertor(RAW_TEXT):
 
     convertedText = output.data.text.raw
     # print("Completion:\n")
-    print(convertedText[1:len(convertedText)-1])
+    # print(convertedText[1:len(convertedText)-1])
     # return output.data.text.raw
+    return convertedText[1:len(convertedText)-1]

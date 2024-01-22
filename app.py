@@ -3,7 +3,7 @@ import base64
 from random import choice
 import models
 
-
+suggested_posts = ["hello world"]
 # Begin Streamlit app
 st.set_page_config(page_title="Convo", layout="wide")
 
@@ -11,13 +11,40 @@ st.set_page_config(page_title="Convo", layout="wide")
 def load_logo(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
+def calculate_convo_score(post):
 
-suggested_posts = [
-    "Based on what I've seen in my travels, it seems that the communities with the fewest financial resources have the most collaborative cultures. Have you seen the same thing?",
-     "This suggested post frames the content in a more conversational manner, and includes a question."
-     "Part of the reason some cultures rely more on family relationships is due to lack of resources. This is what I keep seeing."
-    # ... add more suggested posts as needed
-]
+    a,b = models.sentimentAnalyser(post) # type, score
+    # global suggested_posts
+    global post1
+    post1 = post
+    # suggested_posts.append(models.convertor(post))
+    # st.session_state["current_post"] = models.convertor(post)
+    models.convertor(post)
+    score = b
+    # score += min(len(post) / 100, 0)  # Up to 3 points for length
+    # score += post.count('?') * 2  # 2 points for each question
+    # score += post.count('!')  # 1 point for each exclamation mark
+    # score = min(score, 10)  # Cap the score at 10
+    return score
+
+
+def get_score_style(score):
+    if score == 10:
+        color = "#0FEF34"  # Green
+        message = "Great post!"
+    elif score >= 7:
+        color = "#FFEB3B"  # Yellow
+        message = "Pretty good post"
+    elif score >= 5:
+        color = "#FF9800"  # Orange
+        message = "Could be better"
+    else:
+        color = "#f44336"  # Red
+        message = "Needs work"
+    return color, message
+
+
+
 
 # Function to get a random post from the list of suggested posts
 def get_random_post():
@@ -25,7 +52,7 @@ def get_random_post():
 
 # Initialize the current post in session state if not already done
 if 'current_post' not in st.session_state:
-    st.session_state['current_post'] = "Part of the reason some cultures rely more on family relationships is due to lack of resources. This is what I keep seeing."
+    st.session_state['current_post'] = models.convertor("Hello world")
 
 # Paths to your images - replace these with the actual file paths on your system
 logo_path = "images/img.jpg"  # Replace with the path to your logo image
@@ -489,6 +516,30 @@ score_container.markdown(f"""
     <div class="convo-score-label">convo score</div>
 </div>
 """, unsafe_allow_html=True)
+# Button action
+if analyze_button:
+    if user_input:
+        # Calculate the score
+        global x 
+        x = user_input
+        score = calculate_convo_score(user_input)
+        
+        # Get the color and message based on the score
+        color, message = get_score_style(score)
+        
+        
+        # Update the score circle with dynamic border color and update the score value inside the circle
+        score_container.markdown(f"""
+        <div class="convo-score-container">
+            <div style="color: {color}; font-size: 2em; font-weight: bold; margin-bottom: 10px;">{message}</div>
+            <div class="convo-score-meter" style="border: 13px solid {color};">
+                <span class="convo-score-value">{score}/10</span>
+            </div>
+            <div class="convo-score-label">convo score</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        success_message_container.error("Please enter a post to analyze.")
 
 st.markdown("""
 <h5 class="convo-score-description">

@@ -1,6 +1,7 @@
 import streamlit as st
 import base64
 from random import choice
+import models
 
 
 # Begin Streamlit app

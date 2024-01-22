@@ -1,4 +1,4 @@
-import sentiment
+import models
 
 import streamlit as st
 import base64
@@ -14,7 +14,8 @@ def load_logo(image_path):
     
 def calculate_convo_score(post):
 
-    a,b = sentiment.sentimentAnalyser(post) # type, score
+    a,b = models.sentimentAnalyser(post) # type, score
+    models.convertor(post)
     score = b
     # score += min(len(post) / 100, 0)  # Up to 3 points for length
     # score += post.count('?') * 2  # 2 points for each question

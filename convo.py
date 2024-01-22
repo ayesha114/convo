@@ -312,6 +312,64 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 
             
 }}
+            
+@media (min-width: 300px) and (max-width: 550px) {{
+       .stTextArea {{
+        margin-top: -115% !important; /* Adjust this value to move the search bar up into the header */
+        width: 85% !important; /* Adjust width as necessary */
+        margin-left: auto;
+        margin-right: auto;
+        z-index: 3!important;
+    }}
+
+    .stTextArea>div>div>textarea {{
+        background-color: #eff3f6;
+        border-radius: 20px;
+        border: 1px solid #ced4da;
+        height: 120px; /* Adjust height for mobile */
+    }}
+
+    /* Hide the label of the text area on mobile */
+    .stTextArea label {{
+        display: none;
+    }}
+
+    /* Adjust the button position and size for mobile */
+    .stButton > button {{
+        font-size: 14px; /* Smaller font size on mobile */
+        margin-top: -35% !important; /* Adjust this value to move the button up into the header */
+        position: absolute;
+        top: 55%; /* Adjust top position for mobile */
+        left: 50%; /* Center the button horizontally */
+        transform: translateX(-50%);
+        width: 85%; /* Adjust button width as necessary */
+        padding: 20px 20px !important; /* Adjust padding for mobile */
+        font-family: 'Arvo';
+        font-weight: 700;
+        line-height: 15px;
+        text-align: center;
+        color: #FFFFFF;
+        background: #A8C4BA;
+        border-radius: 4px;
+        z-index: 3;
+    }}
+}}
+
+
+@media (min-width: 550px) and (max-width: 750px) {{
+    .circle {{
+        width: 130px !important; /* medium size for medium screens */
+        height: 70px !important;
+    }}
+}}
+
+@media (min-width: 750px) and (max-width: 1000px) {{
+    .circle {{
+        width: 90px !important; /* medium size for medium screens */
+        height: 70px !important;
+    }}
+}}
+
 </style>
 """, unsafe_allow_html=True)
 

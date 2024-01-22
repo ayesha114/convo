@@ -14,10 +14,8 @@ def load_logo(image_path):
 def calculate_convo_score(post):
 
     a,b = models.sentimentAnalyser(post) # type, score
-    # global suggested_posts
-    global post1
-    post1 = post
-    # suggested_posts.append(models.convertor(post))
+    global suggested_posts
+    suggested_posts.append(models.convertor(post))
     # st.session_state["current_post"] = models.convertor(post)
     models.convertor(post)
     score = b
@@ -73,7 +71,7 @@ div.block-container {{
     max-width: calc(100% - 2rem);
 }}
 
-.header, .header h1, .header h2, .header .stTextArea, .header .stButton > button {{
+.header, .header h1, .header h2 {{
     color: #FFFFFF;
 }}
             
@@ -219,7 +217,7 @@ padding: 4rem 1rem;  /* Adjust the padding to fit your search bar */
 .convo-score-description {{
     font-size: 1.4em; /* Adjust as necessary */
     color: #333;
-    margin-top: 20px; /* Adjust as necessary */
+    margin-top: 2% !important; /* Adjust as necessary */
     width: 80%; /* Adjust as necessary */
     margin-left: auto;
     margin-right: auto;
@@ -560,29 +558,39 @@ st.markdown("""
 st.markdown("""
   <div class="Suggested"> Suggested Post</div>
 """, unsafe_allow_html=True)
+suggested_post_area = st.empty()
+suggested_post_area.text_area("Suggested Post",height=150, help="This is your suggested post. Feel free to edit!")
+txt = models.convertor(user_input)
 
+if user_input:
+    txt = models.convertor(user_input)
+    # logtxtbox.text_area("Logging: ",txt, height = 500)
 # Suggested Post section with buttons
-suggested_post_area = st.text_area("Suggested Post", st.session_state["current_post"], height=150, key="post_area", help="This is your suggested post. Feel free to edit!")
+    suggested_post_area.empty()
+    suggested_post_area.text_area("Suggested Post", txt ,height=150, key="post_area", help="This is your suggested post. Feel free to edit!")
 
-# Placing the buttons in the same row
-col1, col2 = st.columns([1, 1], gap="small")
-with col1:
-    # Custom 'Copy' button
-    copy_button = st.markdown(f"""
-    <button class="copy-button" onclick="navigator.clipboard.writeText(`{st.session_state['current_post']}`)">Copy</button>
-    """, unsafe_allow_html=True)
 
-with col2:
-    # Custom 'Reroll' button
-    reroll_button = st.markdown("""
-    <button class="reroll-button" onclick="window.location.reload()">Reroll</button>
-    """, unsafe_allow_html=True)
+reroll_button = st.button("Reroll")
 
-st.markdown("""
-<h5 class="convo-score-description">
-    We've studied thousands of conversations to identify the elements of posts that lead to the most discussions online, the higher your post's convo score, the more your post contains the elements that lead to discussion.
-</h5>
-""", unsafe_allow_html=True)
+if reroll_button:
+    pass
+# # Placing the buttons in the same row
+# col1, col2 = st.columns([1, 1], gap="small")
+# reroll_button = st.button("Reroll")
+# with col1:
+#     # Custom 'Copy' button
+#     reroll_button.markdown(f"""
+#     <button class="copy-button" onclick="navigator.clipboard.writeText(`{st.session_state['current_post']}`)">Copy</button>
+#     """, unsafe_allow_html=True)
+
+# with col2:
+#     # Custom 'Reroll' button
+#     reroll_button = st.markdown("""
+#     <button class="reroll-button" onclick="models.convertor()">Reroll</button>
+#     """, unsafe_allow_html=True)
+# # if reroll_button:
+# #     print("reroll pressed")
+
 
 st.markdown(f"""
     <div class="Discourse" style="text-align: center; "> 
